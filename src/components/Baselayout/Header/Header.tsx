@@ -1,229 +1,312 @@
 "use client";
 
-import { useEffect, useState, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Menu, Search, Plus, User, LogIn } from 'lucide-react';
-import Link from 'next/link';
-import { Icon } from "@iconify/react";
+import { useEffect, useState, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Menu, User, LogOut, ChevronDown, X } from "lucide-react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from 'next/navigation';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '@/store';
-import { setCredentials } from '@/store/slices/userSlice';
-import UserMenu from '@/components/UserMenu';
-import { handleLogout } from '@/utils/handleLogout';
+import { useRouter } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "@/store";
+import { setCredentials } from "@/store/slices/userSlice";
+import { cn } from "@/utils/utils";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
-
-export function Header() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isClient, setIsClient] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-
+export function Header({ onSidebarToggle }: { onSidebarToggle: () => void }) {
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.auth.user);
-  const isLoggedIn = useSelector((state: RootState) => state.auth.token);
+  const user = {
+    first_name: 'John',
+    last_name: 'Doe',
+    email: 'john@example.com',
+    phone: '+911234567890',
+    isAdmin: true,
+  }
+  const isLoggedIn = true
 
-  // console.log(user);
-  // console.log(isLoggedIn);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
+  // Close user menu when clicking outside
   useEffect(() => {
-    setIsClient(true);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const logout = () => {
     dispatch(setCredentials({ token: null, user: null }));
-    router.push('/login');
+    router.push("/login");
   };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    router.push(`/products?q=${encodeURIComponent(searchQuery.trim())}`);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (searchQuery.trim().length > 3) {
-        router.push(`/products?q=${encodeURIComponent(searchQuery.trim())}`);
-      }
-    }
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    if (isMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isMenuOpen]);
 
   return (
-    <>
-      <motion.header
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-        className="sticky top-0 z-50 bg-[#00b53f] shadow-sm w-full"
-      >
-        <div className="container mx-auto px-4 py-4 flex items-center max-w-[1440px] justify-between">
-          <Link href="/" className="flex items-center">
-            <span className="md:text-4xl text-xl text-white uppercase font-bold">
-              Naijamart
+    <div className="fixed md: ms-72 top-0 z-50 bg-gradient-to-br from-blue-600 to-indigo-800 shadow-md w-full flex items-center justify-between px-4 py-3 border-b border-green-500/20 bg-[#00b53f]">
+      <div className="w-ful mx-auto px-4 py-4 flex items-center border border-red-500 w-full justify-between">
+        <div className="flex items-center">
+          <button
+            aria-label="Toggle Menu"
+            onClick={onSidebarToggle}
+            className="md:hidden text-white hover:bg-green-500/20 p-1 rounded-md transition-colors"
+          >
+            <Menu size={24} />
+          </button>
+
+          <Link href="/" className="ml-2 md:ml-0 flex items-center">
+            <span className="text-white font-bold text-xl md:text-2xl uppercase tracking-tight">
+              {isLoggedIn && user ? `Hi, ${user.first_name}` : 'Simbrella'}
             </span>
           </Link>
-          <form onSubmit={handleSearch} className="hidden md:flex flex-1 mx-6">
-            <motion.div whileFocus={{ scale: 1.02 }} className="relative w-full max-w-xl">
-              <Input
-                type="search"
-                placeholder="What are you looking for?"
-                className="w-full pl-10 rounded-l rounded-r-none"
-                value={searchQuery}
-                onKeyDown={handleKeyDown}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                aria-label="Search products"
-              />
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
-            </motion.div>
-            <Button type="submit" className="ml- rounded-r rounded-l-none bg-orange-400 py-3 text-white">Search</Button>
-          </form>
-          <div className="flex items-center space-x-2">
-            <Button
-              onClick={() => router.push('/post-ad')}
-              variant="outline"
-              size="sm"
-              className="whitespace-nowrap text-white bg-orange-400 px-8">
-              Sell
-            </Button>
-            <Button
-              onClick={() => router.push('/brands')}
-              variant="outline"
-              size="sm"
-              className="whitespace-nowrap text-white bg-orange-400 px-5">
-              Brand
-            </Button>
-            <div className="text hidden md:flex items-center space-x-2">
-              {isClient && Boolean(isLoggedIn) && user ? (
-                <UserMenu
-                  user={user}
-                  dispatch={dispatch}
-                />
-              ) : (
-                <Button asChild variant="outline" className="hidden md:flex">
-                  <Link href="/login">
-                    <LogIn size={18} className="mr-1" />
-                    Login
-                  </Link>
-                </Button>
-              )}
-            </div>
-            <div ref={menuRef}>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="md:hidden"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                {!isMenuOpen ? (
-                  <Menu className="text-white h-6 w-6 cursor-pointer" />
-                ) : (
-                  <Icon icon="mingcute:close-fill" className="text-white h-6 w-6 cursor-pointer" />
-                )}
-              </Button>
-            </div>
-          </div>
         </div>
 
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div
-              key="mobile-menu"
-              initial={{ y: -20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -10, opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="md:hidden absolute top-full left-0 w-full z-40 bg-[#00b53f] p-4 shadow-lg border-t border-slate-200"
-            >
-              <form onSubmit={handleSearch} className="flex">
-                <motion.div whileFocus={{ scale: 1.02 }} className="relative w-full md:max-w-xl">
-                  <Input
-                    type="search"
-                    placeholder="What are you looking for?"
-                    className="w-full"
-                    value={searchQuery}
-                    onKeyDown={handleKeyDown}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    aria-label="Search products"
-                  />
-                </motion.div>
-                <Button type="submit" className="ml-2 bg-orange-400">
-                  <Search size={18} />
-                </Button>
-              </form>
-              <div className="mt-4 space-y-2">
-                <Button asChild className="w-full justify-start bg-orange-400 text-white">
-                  <Link href="/post-ad">
-                    <Plus size={18} className="mr-2" />
-                    Sell
-                    {/* Post an Ad */}
-                  </Link>
-                </Button>
-                {isClient && Boolean(isLoggedIn) && user ? (
-                  <>
-                    <Button asChild variant="outline" className="w-full justify-start">
-                      <Link href="/profile">
-                        <User size={18} className="mr-2" />
-                        My Profile
-                      </Link>
-                    </Button>
-                    <Button asChild variant="outline" className="w-full justify-start">
-                      <Link href="/my-ads">
-                        <Icon icon="material-symbols:ad-units" className="mr-2 text-base" />
-                        My Ads
-                      </Link>
-                    </Button>
-                    <Button asChild variant="outline" className="w-full justify-start">
-                      <Link href="/favorites">
-                        <Icon icon="mdi:heart" />
-                        Favorites
-                      </Link>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start text-red-500 hover:bg-red-50"
-                      onClick={() => handleLogout(router, dispatch)}>
-                      <Icon icon="mdi:logout" className="mr-2 text-red-500" />
-                      Logout
-                    </Button>
-                  </>
-                ) : (
-                  <Button asChild variant="outline" className="w-full justify-start">
-                    <Link href="/login">
-                      <LogIn size={18} className="mr-2 text-red-500" />
-                      Login / Register
-                    </Link>
-                  </Button>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div className="flex items-center space-x-2 border border-red-500">
+          {isLoggedIn && user ? (
+            <div className="relative" ref={userMenuRef}>
+              <button
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className="flex items-center space-x-2 bg-green-500/20 hover:bg-green-500/30 rounded-full px-3 py-1.5 transition-colors"
+              >
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <User size={16} />
+                </div>
+                <ChevronDown
+                  size={16}
+                  className={`text-white transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`}
+                />
+              </button>
 
-      </motion.header>
-    </>
+              <AnimatePresence>
+                {isUserMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50"
+                  >
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <p className="text-sm font-medium text-gray-800">{user.first_name} {user.last_name}</p>
+                      <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                    </div>
+                    <Link
+                      href="/profile"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      Profile
+                    </Link>
+                    <Link
+                      href="/settings"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      Settings
+                    </Link>
+                    <button
+                      onClick={logout}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                    >
+                      Logout
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ) : (
+            <>
+              <Button
+                variant="ghost"
+                className="hidden md:inline-flex text-white hover:bg-white/10 hover:text-white"
+                asChild
+              >
+                <Link href="/login">Login</Link>
+              </Button>
+              <Button
+                className="hidden md:inline-flex bg-white text-green-600 hover:bg-white/90"
+                asChild
+              >
+                <Link href="/register">Register</Link>
+              </Button>
+            </>
+          )}
+        </div>
+      </div>
+
+    </div>
   );
 }
 
-export default Header;
+export function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const user = {
+    first_name: 'John',
+    last_name: 'Doe',
+    email: 'john@example.com',
+    phone: '+911234567890',
+    isAdmin: true,
+  }
+  const isLoggedIn = true
+  const sidebarRef = useRef<HTMLDivElement>(null);
+
+  // Close sidebar when clicking outside on mobile
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+    if (isOpen) document.addEventListener("mousedown", handleClickOutside);
+    else document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen, onClose]);
+
+  const logout = () => {
+    dispatch(setCredentials({ token: null, user: null }));
+    router.push("/login");
+    onClose();
+  };
+
+  const navItems = [
+    { href: "/dashboard", label: "Dashboard", icon: "grid" },
+    { href: "/wallets", label: "Wallets", icon: "wallet" },
+    { href: "/transactions", label: "Transactions", icon: "list" },
+    { href: "/send", label: "Send Money", icon: "send" },
+    { href: "/receive", label: "Receive Money", icon: "receive" },
+    { href: "/services", label: "Pay Services", icon: "service" },
+    { href: "/analytics", label: "Analytics", icon: "analytics" },
+  ];
+
+  const adminItems = [
+    { href: "/admin/users", label: "Manage Users", icon: "users" },
+    { href: "/admin/services", label: "Manage Services", icon: "services" },
+    { href: "/admin/logs", label: "System Logs", icon: "logs" },
+  ];
+
+  return (
+    <AnimatePresence>
+      {(isOpen || typeof window !== "undefined" && window.innerWidth >= 768) && (
+        <motion.nav
+          ref={sidebarRef}
+          initial={{ x: -280, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: -280, opacity: 0 }}
+          transition={{ type: "spring", damping: 25, stiffness: 300 }}
+          className="fixed top-0 left-0 h-full w-72 overflow-y-auto no-scrollbar bg-gradient-to-b from-green-700 to-green-800 text-white shadow-xl z-40"
+        >
+          <div className="flex flex-col h-full p-4">
+            {/* Mobile close button */}
+            <button
+              onClick={onClose}
+              className="md:hidden absolute top-4 right-4 text-white/70 hover:text-white p-1"
+              aria-label="Close menu"
+            >
+              <X size={20} />
+            </button>
+
+            {/* Logo */}
+            <div className="flex items-center p-4 mb-6">
+              <Link href="/" className="flex items-center" onClick={onClose}>
+                <span className="text-white font-bold text-xl uppercase tracking-tight">
+                  Simbrella
+                </span>
+                <span className="ml-1 bg-white text-green-600 px-2 py-1 rounded-md text-sm font-bold">
+                  VAULT
+                </span>
+              </Link>
+            </div>
+
+            {/* User profile */}
+            {isLoggedIn && user && (
+              <div className="flex items-center px-4 py-3 mb-6 bg-green-600/30 rounded-lg">
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center mr-3">
+                  <User size={18} />
+                </div>
+                <div>
+                  <p className="font-medium">{user.first_name} {user.last_name}</p>
+                  <p className="text-xs text-white/70 truncate">{user.email}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Main navigation */}
+            <ul className="flex-grow space-y-1">
+              {navItems.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="flex items-center px-4 py-3 rounded-lg hover:bg-green-600/50 transition-colors"
+                    onClick={onClose}
+                  >
+                    <span className="w-5 h-5 mr-3 flex items-center justify-center">
+                      <Icon icon={`mdi:${item.icon}`} className="w-5 h-5" />
+                    </span>
+                    <span>{item.label}</span>
+                  </Link>
+                </li>
+              ))}
+
+              {isLoggedIn && user?.isAdmin && (
+                <>
+                  <li className="mt-6 mb-2 px-4 text-xs font-semibold uppercase tracking-wider text-white/50">
+                    Admin
+                  </li>
+                  {adminItems.map((item) => (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        className="flex items-center px-4 py-3 rounded-lg hover:bg-green-600/50 transition-colors"
+                        onClick={onClose}
+                      >
+                        <span className="w-5 h-5 mr-3 flex items-center justify-center">
+                          <Icon icon={`mdi:${item.icon}`} className="w-5 h-5" />
+                        </span>
+                        <span>{item.label}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </>
+              )}
+            </ul>
+
+            {/* Footer */}
+            <div className="mt-auto pt-4 border-t border-green-600/30">
+              {isLoggedIn ? (
+                <button
+                  onClick={logout}
+                  className="w-full flex items-center justify-center py-2 px-4 bg-red-500/20 hover:bg-red-500/30 rounded-lg transition-colors"
+                >
+                  <LogOut size={16} className="mr-2" />
+                  Logout
+                </button>
+              ) : (
+                <div className="space-y-2">
+                  <Button
+                    className="w-full bg-white text-green-600 hover:bg-white/90"
+                    asChild
+                  >
+                    <Link href="/register" onClick={onClose}>
+                      Register
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full text-white border-white/30 hover:bg-white/10"
+                    asChild
+                  >
+                    <Link href="/login" onClick={onClose}>
+                      Login
+                    </Link>
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        </motion.nav>
+      )}
+    </AnimatePresence>
+  );
+}
