@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
 import React, { useState } from 'react';
-import { FiFilter, FiSearch, FiDownload, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { Icon } from '@iconify/react';
 
 // Types
 interface Transaction {
@@ -37,7 +37,36 @@ const mockTransactions: Transaction[] = [
     status: 'completed',
     wallet: 'Business'
   },
-  // Add more transactions...
+  {
+    id: 'txn_003',
+    date: '2023-06-10T09:15:00Z',
+    description: 'Internet Bill',
+    amount: 59.99,
+    type: 'debit',
+    category: 'Utilities',
+    status: 'pending',
+    wallet: 'Personal'
+  },
+  {
+    id: 'txn_004',
+    date: '2023-06-05T18:45:00Z',
+    description: 'Restaurant',
+    amount: 120.50,
+    type: 'debit',
+    category: 'Food',
+    status: 'completed',
+    wallet: 'Personal'
+  },
+  {
+    id: 'txn_005',
+    date: '2023-06-01T11:20:00Z',
+    description: 'Freelance Payment',
+    amount: 750.00,
+    type: 'credit',
+    category: 'Income',
+    status: 'completed',
+    wallet: 'Savings'
+  },
 ];
 
 const TransactionsPage = () => {
@@ -59,7 +88,7 @@ const TransactionsPage = () => {
     const matchesCategory = !filters.category || txn.category === filters.category;
     const matchesStatus = !filters.status || txn.status === filters.status;
     const matchesWallet = !filters.wallet || txn.wallet === filters.wallet;
-
+    
     return matchesSearch && matchesType && matchesCategory && matchesStatus && matchesWallet;
   });
 
@@ -93,7 +122,7 @@ const TransactionsPage = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="relative flex-grow">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FiSearch className="text-gray-400" />
+              <Icon icon="heroicons:magnifying-glass" className="text-gray-400 h-5 w-5" />
             </div>
             <input
               type="text"
@@ -103,19 +132,22 @@ const TransactionsPage = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-
+          
           <div className="flex items-center space-x-3">
-            <button
+            <button 
               onClick={() => setShowFilters(!showFilters)}
               className="flex items-center px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
             >
-              <FiFilter className="mr-2" />
+              <Icon icon="heroicons:funnel" className="text-gray-500 h-5 w-5 mr-2" />
               Filters
-              {showFilters ? <FiChevronUp className="ml-2" /> : <FiChevronDown className="ml-2" />}
+              <Icon 
+                icon={showFilters ? "heroicons:chevron-up" : "heroicons:chevron-down"} 
+                className="text-gray-500 h-5 w-5 ml-2" 
+              />
             </button>
-
+            
             <button className="flex items-center px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-              <FiDownload className="mr-2" />
+              <Icon icon="heroicons:arrow-down-tray" className="text-gray-500 h-5 w-5 mr-2" />
               Export
             </button>
           </div>
@@ -138,7 +170,7 @@ const TransactionsPage = () => {
                   <option value="debit">Debit</option>
                 </select>
               </div>
-
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
                 <select
@@ -154,7 +186,7 @@ const TransactionsPage = () => {
                   <option value="Food">Food</option>
                 </select>
               </div>
-
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                 <select
@@ -169,7 +201,7 @@ const TransactionsPage = () => {
                   <option value="failed">Failed</option>
                 </select>
               </div>
-
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Wallet</label>
                 <select
@@ -184,7 +216,7 @@ const TransactionsPage = () => {
                   <option value="Savings">Savings</option>
                 </select>
               </div>
-
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
                 <select
@@ -201,7 +233,7 @@ const TransactionsPage = () => {
                 </select>
               </div>
             </div>
-
+            
             <div className="mt-4 flex justify-end">
               <button
                 onClick={resetFilters}
@@ -250,15 +282,17 @@ const TransactionsPage = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${txn.status === 'completed' ? 'bg-green-100 text-green-800' :
-                          txn.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-red-100 text-red-800'
-                        }`}>
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        txn.status === 'completed' ? 'bg-green-100 text-green-800' :
+                        txn.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
                         {txn.status}
                       </span>
                     </td>
-                    <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium text-right ${txn.type === 'credit' ? 'text-green-600' : 'text-red-600'
-                      }`}>
+                    <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium text-right ${
+                      txn.type === 'credit' ? 'text-green-600' : 'text-red-600'
+                    }`}>
                       {txn.type === 'credit' ? '+' : '-'}${txn.amount.toFixed(2)}
                     </td>
                   </tr>
@@ -296,7 +330,7 @@ const TransactionsPage = () => {
                 <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
                   <button className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                     <span className="sr-only">Previous</span>
-                    &larr;
+                    <Icon icon="heroicons:arrow-small-left" className="h-5 w-5" />
                   </button>
                   <button aria-current="page" className="z-10 bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
                     1
@@ -309,7 +343,7 @@ const TransactionsPage = () => {
                   </button>
                   <button className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                     <span className="sr-only">Next</span>
-                    &rarr;
+                    <Icon icon="heroicons:arrow-small-right" className="h-5 w-5" />
                   </button>
                 </nav>
               </div>

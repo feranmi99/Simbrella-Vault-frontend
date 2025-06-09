@@ -16,7 +16,7 @@ const WalletSelector: React.FC<WalletSelectorProps> = ({
     ];
 
     return (
-        <div className="bg-white rounded-xl shadow-md p-6">
+        <div className="bg-white rounded-xl shadow-md p-4">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">My Wallets</h2>
 
             <div className="space-y-3">
