@@ -39,11 +39,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <Script src="https://js.paystack.co/v1/inline.js" strategy="beforeInteractive" />
-      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased`}
+        // className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased`}
       >
         <Provider>
           <ToastContainer position="top-right" />

@@ -1,0 +1,15 @@
+export const houseTypes = [
+  'Flat in Apartment Building',
+  'Detached House',
+  'Semi-Detached House',
+  'Terraced House',
+  'Bungalow',
+  'Duplex',
+  'Townhouse',
+  'Cottage',
+  'Mansion',
+  'Villa',
+  'Apartment',
+  'Condominium',
+  'Loft',
+];
