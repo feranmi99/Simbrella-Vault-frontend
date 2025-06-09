@@ -65,7 +65,6 @@ const Login = () => {
     <AuthLayout isLogedIn={true}>
       <h2 className='font-semibold text-2xl mt-20'>Log In</h2>
       <div className='text'>
-        {/* <SocialAuth /> */}
         <div className='mt-6 pb-4'>
           <div className='w-full flex items-center justify-between'>
             <hr className='flex-1' />
@@ -109,13 +108,13 @@ const Login = () => {
               </span>
             </p>
           </div>
-          <Button isLoading={isPending} type='submit' className='w-full bg-orange-400' >
+          <Button isLoading={isPending} type='submit' className='w-full bg-blue-600 hover:bg-blue-700' >
             Log In
           </Button>
           <p className='text-sm text-right mt-4'>
             Don&apos; have an account?{' '}
             <span
-              className='font-semibold cursor-pointer text-primary'
+              className='font-semibold cursor-pointer text-blue-600 hover:text-blue-700'
               onClick={() => router.push('/register')}>
               Signup here!
             </span>

@@ -171,7 +171,7 @@ const Register = () => {
           </div>
           <Button
             type='submit'
-            className='w-full bg-orange-400'
+            className='w-full bg-blue-600 hover:bg-blue-700'
             isLoading={isPending}
             disabled={!hasAcceptedTandCVal}
           >
@@ -180,7 +180,7 @@ const Register = () => {
           <p className='text-sm text-right mt-2'>
             Already have an account?{' '}
             <span
-              className='font-semibold cursor-pointer text-primary'
+              className='font-semibold cursor-pointer text-blue-600 hover:text-blue-700'
               onClick={() => router.push('/login')}>
               Login here
             </span>
