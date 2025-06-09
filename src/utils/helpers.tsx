@@ -1,3 +1,5 @@
+import { Wallet } from "@/types";
+
 export const areObjectsEqual = (
   obj1: Record<string, any>,
   obj2: Record<string, any>
@@ -40,4 +42,17 @@ export const formatNumberToMoney = (val: number | string) => {
 
 export const formatWordLimit = (word: string, limit = 20) => {
   return word.length > limit ? word.slice(0, limit) + '...' : word;
+};
+
+
+export const getTotalBalance = (wallets: Wallet[]) => 
+  wallets.reduce((acc, wallet) => acc + wallet.balance, 0);
+
+export const formatDate = (dateStr: string) => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
 };

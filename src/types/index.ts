@@ -44,3 +44,23 @@ export type LayoutProps = {
   children: React.ReactNode;
 };
 
+
+
+export type Wallet = {
+  id: string;
+  name: string;
+  type: 'personal' | 'business' | 'savings';
+  balance: number;
+  currency: string;
+  createdAt: string;
+};
+
+export type Transaction = {
+  id: string;
+  date: string;
+  description: string;
+  amount: number;
+  currency: string;
+  status: 'completed' | 'pending' | 'failed';
+  category?: 'income' | 'shopping' | 'transfer' | 'bills' | 'food';
+};
