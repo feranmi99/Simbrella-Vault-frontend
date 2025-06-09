@@ -1,5 +1,5 @@
 import { Wallet } from '@/types';
-import { Send, Receive, MoreVertical, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { Send,  MoreVertical, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import {
@@ -8,6 +8,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Icon } from '@iconify/react/dist/iconify.js';
 
 export default function BalanceCard({ wallet }: { wallet: Wallet }) {
     const progress = (wallet.balance / wallet.goalAmount) * 100;
@@ -59,31 +60,13 @@ export default function BalanceCard({ wallet }: { wallet: Wallet }) {
                     </div>
                 )}
             </div>
-
-            <div className="mb-6">
-                <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm font-medium text-gray-500">Goal Progress</span>
-                    <span className="text-sm font-medium text-gray-900">
-                        ${wallet.balance.toLocaleString()} of ${wallet.goalAmount.toLocaleString()}
-                    </span>
-                </div>
-                <Progress 
-                    value={progress} 
-                    className={`h-2 ${isGoalReached ? 'bg-green-100' : 'bg-gray-200'}`}
-                    indicatorClassName={isGoalReached ? 'bg-green-500' : 'bg-blue-500'}
-                />
-                <p className={`text-xs mt-1 text-right ${isGoalReached ? 'text-green-600 font-medium' : 'text-gray-500'}`}>
-                    {isGoalReached ? 'Goal reached! 🎉' : `${progress.toFixed(0)}% completed`}
-                </p>
-            </div>
-
             <div className="flex space-x-3">
                 <Button className="flex-1 bg-gradient-to-br from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-sm">
                     <Send className="h-4 w-4 mr-2" />
                     Send
                 </Button>
-                <Button variant="outline" className="flex-1 border-gray-300 hover:bg-gray-50">
-                    <Receive className="h-4 w-4 mr-2" />
+                <Button variant="outline" className="flex-1 border-gray-300 bg-slate-200 hover:bg-slate-400">
+                    <Icon icon="material-symbols:call-received" />
                     Receive
                 </Button>
             </div>
@@ -95,8 +78,6 @@ function getWalletColor(type: string) {
     switch (type.toLowerCase()) {
         case 'savings':
             return 'bg-green-500';
-        case 'investment':
-            return 'bg-purple-500';
         case 'business':
             return 'bg-blue-500';
         case 'personal':

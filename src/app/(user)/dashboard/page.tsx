@@ -4,6 +4,7 @@ import BalanceCard from '@/components/dashboard/BalanceCard';
 import BalanceTrendChart from '@/components/dashboard/BalanceTrendChart';
 import QuickActions from '@/components/dashboard/QuickActions';
 import RecentTransactions from '@/components/dashboard/RecentTransactions';
+import { ArrowDownCircle } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const wallets = [
@@ -13,7 +14,12 @@ const wallets = [
         type: 'personal',
         balance: 1250.5,
         currency: 'USD',
+        goalAmount: 2000,
         createdAt: '2023-01-01',
+        transactions: [
+            { id: 't1', type: 'deposit', amount: 500, date: '2023-06-05' },
+            { id: 't2', type: 'withdrawal', amount: 250, date: '2023-06-07' },
+        ]
     },
     {
         id: '2',
@@ -21,7 +27,11 @@ const wallets = [
         type: 'business',
         balance: 3500.75,
         currency: 'USD',
+        goalAmount: 5000,
         createdAt: '2023-02-15',
+        transactions: [
+            { id: 't1', type: 'deposit', amount: 1000, date: '2023-06-06' }
+        ]
     },
     {
         id: '3',
@@ -29,21 +39,13 @@ const wallets = [
         type: 'savings',
         balance: 8000.0,
         currency: 'USD',
+        goalAmount: 10000,
         createdAt: '2023-03-10',
+        transactions: [
+            { id: 't1', type: 'deposit', amount: 2000, date: '2023-06-03' }
+        ]
     },
 ];
-
-const balanceHistory = [
-    { date: 'Jun 1', balance: 4200 },
-    { date: 'Jun 2', balance: 3800 },
-    { date: 'Jun 3', balance: 4100 },
-    { date: 'Jun 4', balance: 3950 },
-    { date: 'Jun 5', balance: 4750 },
-    { date: 'Jun 6', balance: 4300 },
-    { date: 'Jun 7', balance: 4600 },
-    { date: 'Jun 8', balance: 4850 },
-];
-
 
 const getTotalBalance = (wallets: any[]) =>
     wallets.reduce((acc, wallet) => acc + wallet.balance, 0);
@@ -58,7 +60,7 @@ const Page = () => {
                         <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full filter blur-3xl opacity-20"></div>
                         <div className="absolute bottom-0 right-0 w-64 h-64 bg-indigo-300 rounded-full filter blur-3xl opacity-20"></div>
                     </div>
-                    <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div className="relative z-10 mb-3 flex flex-co md: flex-row md:items-center md: justify-between">
                         <div>
                             <p className="text-sm uppercase font-semibold opacity-80 tracking-wider">Total Balance</p>
                             <h2 className="text-4xl font-bold mt-1">
@@ -70,13 +72,16 @@ const Page = () => {
                             </p>
                         </div>
                         <button
-                            className="mt-4 md:mt-0 bg-white/90 text-blue-700 font-semibold py-3 px-6 rounded-xl hover:bg-white transition transform hover:scale-105 shadow-md"
-                            aria-label="Add new wallet"
+                            className="mt-4 md:mt-0 bg-white/90 text-blue-700 h-fit font-semibold py-3 px-6 rounded-lg w-fit hover:bg-white transition transform hover:scale-105 shadow-md flex items-center gap-2"
+                            aria-label="Top up wallet"
                         >
-                            + Add Wallet
+                            <ArrowDownCircle className="h-5 w-5" />
+                            Top Up
                         </button>
+
+
                     </div>
-                    <BalanceTrendChart   />
+                    <BalanceTrendChart />
                 </section>
                 <section>
                     <h3 className="text-xl font-semibold mb-4">Your Wallets</h3>
@@ -95,6 +100,7 @@ const Page = () => {
                     <RecentTransactions />
                 </section>
             </div>
+
         </>
     )
 }
