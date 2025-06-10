@@ -10,7 +10,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store";
 import { setCredentials } from "@/store/slices/userSlice";
 import { cn } from "@/utils/utils";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import { Icon } from "@iconify/react";
 import NotificationsBell from "@/components/Baselayout/Layout/NotificationsBell";
 
 const Header = ({ onSidebarToggle }: { onSidebarToggle: () => void }) => {
@@ -57,11 +57,11 @@ const Header = ({ onSidebarToggle }: { onSidebarToggle: () => void }) => {
   };
 
   const menuItems = [
-    { label: "Profile", icon: "👤", path: "/profile" },
-    { label: "Settings", icon: "⚙️", path: "/settings" },
-    { label: "Billing", icon: "💳", path: "/billing" },
-    { label: "Help & Support", icon: "❓", path: "/support" },
-    { label: "Logout", icon: "🚪", action: handleLogout }
+    { label: "Profile", icon: "mdi:account", path: "/profile" },
+    { label: "Settings", icon: "mdi:cog", path: "/settings" },
+    { label: "Billing", icon: "mdi:credit-card-outline", path: "/billing" },
+    { label: "Help & Support", icon: "mdi:help-circle-outline", path: "/support" },
+    { label: "Logout", icon: "mdi:logout", action: handleLogout }
   ];
   const [isOpen, setIsOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(3);
@@ -242,7 +242,7 @@ const Header = ({ onSidebarToggle }: { onSidebarToggle: () => void }) => {
                               className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                               onClick={() => setIsUserMenuOpen(false)}
                             >
-                              <span className="mr-2">{item.icon}</span>
+                              <Icon icon={item.icon} className="mr-2" />
                               {item.label}
                             </Link>
                           ) : (
@@ -251,9 +251,9 @@ const Header = ({ onSidebarToggle }: { onSidebarToggle: () => void }) => {
                                 item.action?.();
                                 setIsUserMenuOpen(false)
                               }}
-                              className="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              className="w-full cursor-pointer bg-red-500 text-white text-left flex items-center px-4 py-2 text-sm hover:bg-red-600"
                             >
-                              <span className="mr-2">{item.icon}</span>
+                              <Icon icon={item.icon} className="mr-2" />
                               {item.label}
                             </button>
                           )}

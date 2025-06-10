@@ -52,7 +52,6 @@ const SideBarLayout = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
         { href: "/wallets", label: "Wallets", icon: "mdi:wallet" },
         { href: "/transactions", label: "Transactions", icon: "grommet-icons:transaction" },
         { href: "/send-money", label: "Send Money", icon: "mdi:send" },
-        { href: "/receive", label: "Receive Money", icon: "hugeicons:mail-receive-01" },
         { href: "/services", label: "Pay Services", icon: "grommet-icons:services" },
         { href: "/analytics", label: "Analytics", icon: "mdi:analytics" },
     ];
