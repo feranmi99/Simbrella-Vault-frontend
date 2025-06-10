@@ -34,7 +34,7 @@ export interface Listing {
   user?: User;
   createdAt: Date;
   featured: boolean;
-   // isSold: boolean;
+  // isSold: boolean;
   // condition: string;
   // tags: string[];
   // views: number;
@@ -63,4 +63,26 @@ export type Transaction = {
   currency: string;
   status: 'completed' | 'pending' | 'failed';
   category?: 'income' | 'shopping' | 'transfer' | 'bills' | 'food';
+};
+
+
+export type ServiceType = {
+  id: number;
+  name: string;
+  icon: string;
+};
+
+export type WalletType = {
+  id: string;
+  name: string;
+  balance: number;
+};
+
+export type TransactionType = {
+  id: string;
+  service: ServiceType;
+  amount: number;
+  date: Date;
+  status: 'completed' | 'failed' | 'pending';
+  walletId: string;
 };
