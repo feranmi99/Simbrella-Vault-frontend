@@ -1,8 +1,5 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import userReducer from './slices/userSlice';
-import listingReducer from './slices/listingSlice';
-import brandReducer from './slices/brandSlice';
-import createBrandReducer from './slices/CreateBrand';
 import storage from 'redux-persist/lib/storage';
 import {
   persistStore,
@@ -24,9 +21,6 @@ const persistConfig = {
 // 2. Combine reducers
 const rootReducer = combineReducers({
   auth: userReducer,
-  listing: listingReducer,
-  brand: brandReducer,
-  createBrand: createBrandReducer,
 });
 
 // 3. Persisted reducer

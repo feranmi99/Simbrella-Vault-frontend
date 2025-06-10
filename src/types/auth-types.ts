@@ -1,5 +1,5 @@
 export interface LoginFormPayload {
-  emailOrPhone: string;
+  email: string;
   password: string;
 }
 

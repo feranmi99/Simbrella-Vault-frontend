@@ -35,7 +35,7 @@ const Login = () => {
 
   const onSubmit: SubmitHandler<LoginFormPayload> = (data) => {
     handleLogin(data);
-    localStorage.setItem('nairazo_v_email', data.emailOrPhone ?? null);
+    localStorage.setItem('nairazo_v_email', data.email ?? null);
   };
 
   const { mutate: handleLogin, isPending } = useMutation({
@@ -48,16 +48,12 @@ const Login = () => {
         })
       );
       toast.success(data.message);
-      router.push('/');
+      router.push('/dashboard');
     },
     onError: (error: any) => {
       const serverEmail = error?.response?.data?.email;
       const err = unAuthenticatedErrorHandler(error);
       toast.error(err);
-      if (err.toLocaleLowerCase().includes('not verified')) {
-        localStorage.setItem('nairazo_v_email', serverEmail);
-        router.push('/verify-email');
-      }
     },
   });
 
@@ -75,10 +71,10 @@ const Login = () => {
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className='mt-4'>
             <Textfield
-              id='emailOrPhone'
+              id='email'
               required
-              label='Email Or Mobile Number'
-              error={errors.emailOrPhone?.message}
+              label='Email'
+              error={errors.email?.message}
               register={register}
             />
           </div>

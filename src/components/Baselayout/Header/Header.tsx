@@ -19,14 +19,12 @@ const Header = ({ onSidebarToggle }: { onSidebarToggle: () => void }) => {
 
   const router = useRouter();
   const dispatch = useDispatch();
-  const user = {
-    first_name: 'Johnson',
-    last_name: 'Doe',
-    email: 'john@example.com',
-    phone: '+911234567890',
-    isAdmin: true,
-  }
-  const isLoggedIn = true
+  const user = useSelector((state: RootState) => state.auth.user);
+  const isLoggedIn = useSelector((state: RootState) => state.auth.token);
+
+  console.log(isLoggedIn);
+  console.log(user);
+  
 
   const userMenuRef = useRef<HTMLDivElement>(null);
   const notificationsBellRef = useRef<HTMLDivElement>(null);
