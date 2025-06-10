@@ -4,6 +4,7 @@ import { TransactionHistory } from '@/components/analytics/TransactionHistory';
 import BalanceCard from '@/components/dashboard/BalanceCard';
 import BalanceTrendChart from '@/components/dashboard/BalanceTrendChart';
 import QuickActions from '@/components/dashboard/QuickActions';
+import { Icon } from '@iconify/react/dist/iconify.js';
 import { ArrowDownCircle } from 'lucide-react';
 
 const wallets = [
@@ -74,8 +75,8 @@ const Page = () => {
                             className="mt-4 md:mt-0 bg-white/90 text-blue-700 h-fit font-semibold py-3 px-6 rounded-lg w-fit hover:bg-white transition transform hover:scale-105 shadow-md flex items-center gap-2"
                             aria-label="Top up wallet"
                         >
-                            <ArrowDownCircle className="h-5 w-5" />
-                            Top Up
+                            <Icon icon="lucide:wallet" className="h-5 w-5" />
+                            Create Wallet
                         </button>
 
 
