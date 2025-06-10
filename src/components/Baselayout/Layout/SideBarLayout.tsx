@@ -12,6 +12,13 @@ const SideBarLayout = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
     const dispatch = useDispatch();
     const router = useRouter();
     const pathname = usePathname();
+    const [hasMounted, setHasMounted] = React.useState(false);
+
+
+    useEffect(() => {
+        setHasMounted(true);
+    }, []);
+
 
     const user = {
         first_name: 'John',
@@ -61,7 +68,7 @@ const SideBarLayout = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
     return (
         <>
             <AnimatePresence>
-                {(isOpen || typeof window !== "undefined" && window.innerWidth >= 768) && (
+                {hasMounted && (isOpen || window.innerWidth >= 768) && (
                     <motion.nav
                         ref={sidebarRef}
                         initial={{ x: -280, opacity: 0 }}
@@ -114,8 +121,8 @@ const SideBarLayout = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
                                                 <Link
                                                     href={item.href}
                                                     className={`flex items-center px-4 py-3 rounded-lg transition-colors ${isActive(item.href)
-                                                            ? 'bg-white/20 font-semibold'
-                                                            : 'hover:bg-slate-400/50'
+                                                        ? 'bg-white/20 font-semibold'
+                                                        : 'hover:bg-slate-400/50'
                                                         }`} onClick={onClose}
                                                 >
                                                     <span className="w-5 h-5 mr-3 flex items-center justify-center">
