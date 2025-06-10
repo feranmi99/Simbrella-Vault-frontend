@@ -32,3 +32,34 @@ body {
   --tabs-active-bg: hsl(0 0% 100%); /* bg-background */
   --tabs-active-text: hsl(240 10% 3.9%); /* text-foreground */
 }
+
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out both;
+}
+
+.animate-slide-fade-in {
+  animation: slide-fade-in 0.3s ease-out both;
+}

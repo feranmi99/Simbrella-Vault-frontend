@@ -1,85 +1,49 @@
 import React from 'react';
-import { Bar } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 interface ExpenseData {
-  category: string;
-  amount: number;
+    category: string;
+    amount: number;
 }
 
 interface ExpenseBarChartProps {
-  data: ExpenseData[];
+    data: ExpenseData[];
 }
 
 export const ExpenseBarChart: React.FC<ExpenseBarChartProps> = ({ data }) => {
-  const chartData = {
-    labels: data.map(item => item.category),
-    datasets: [
-      {
-        label: 'Amount (₦)',
-        data: data.map(item => item.amount),
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.7)',
-          'rgba(54, 162, 235, 0.7)',
-          'rgba(255, 206, 86, 0.7)',
-          'rgba(75, 192, 192, 0.7)',
-          'rgba(153, 102, 255, 0.7)',
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
+    // Format data for Recharts
+    const chartData = data.map(item => ({
+        name: item.category,
+        amount: item.amount,
+    }));
 
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      tooltip: {
-        callbacks: {
-          label: function(context: any) {
-            return `₦${context.raw.toLocaleString()}`;
-          }
-        }
-      }
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          callback: function(value: any) {
-            return `₦${value.toLocaleString()}`;
-          }
-        }
-      }
-    }
-  };
-
-  return <Bar data={chartData} options={options} />;
+    return (
+        <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+                data={chartData}
+                margin={{
+                    top: 20,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                }}
+            >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis
+                    tickFormatter={(value) => `₦${value.toLocaleString()}`}
+                />
+                <Tooltip
+                    formatter={(value) => [`₦${Number(value).toLocaleString()}`, 'Amount']}
+                />
+                <Legend />
+                <Bar
+                    dataKey="amount"
+                    name="Amount"
+                    fill="#8884d8"
+                    radius={[4, 4, 0, 0]}
+                />
+            </BarChart>
+        </ResponsiveContainer>
+    );
 };

@@ -31,7 +31,7 @@ const BalanceTrendChart = () => {
                     <CardTitle className="text-lg font-semibold">Balance Overview</CardTitle>
                     <div className="flex items-center space-x-2">
                         <Icon icon="fa6-solid:naira-sign" className="h-5 w-5 text-green-600" />
-                        <span className="text-sm font-medium text-gray-500">Last 7 days</span>
+                        <span className="text-sm font-medium text-white">Last 7 days</span>
                     </div>
                 </div>
             </CardHeader>

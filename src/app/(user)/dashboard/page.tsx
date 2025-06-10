@@ -1,11 +1,10 @@
 "use client";
 
+import { TransactionHistory } from '@/components/analytics/TransactionHistory';
 import BalanceCard from '@/components/dashboard/BalanceCard';
 import BalanceTrendChart from '@/components/dashboard/BalanceTrendChart';
 import QuickActions from '@/components/dashboard/QuickActions';
-import RecentTransactions from '@/components/dashboard/RecentTransactions';
 import { ArrowDownCircle } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const wallets = [
     {
@@ -97,7 +96,15 @@ const Page = () => {
                 </section>
                 <section>
                     <h3 className="text-xl font-semibold mb-4">Recent Transactions</h3>
-                    <RecentTransactions />
+                    <TransactionHistory
+                        transactions={[
+                            { id: 1, description: 'Grocery shopping', amount: 25000, date: '2023-06-15', type: 'expense', wallet: 'Personal' },
+                            { id: 2, description: 'Freelance payment', amount: 120000, date: '2023-06-14', type: 'income', wallet: 'Business' },
+                            { id: 3, description: 'Electricity bill', amount: 18000, date: '2023-06-12', type: 'expense', wallet: 'Savings' },
+                            { id: 4, description: 'MTN Airtime', amount: 5000, date: '2023-06-10', type: 'expense', wallet: 'Personal' },
+                            { id: 5, description: 'Client project', amount: 200000, date: '2023-06-08', type: 'income', wallet: 'Business' },
+                        ]}
+                    />
                 </section>
             </div>
 
