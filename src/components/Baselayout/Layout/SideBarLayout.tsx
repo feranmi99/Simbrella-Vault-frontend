@@ -1,33 +1,35 @@
 import { Button } from '@/components/ui/button';
+import { RootState } from '@/store';
 import { setCredentials } from '@/store/slices/userSlice';
+import { IUser } from '@/types/user-types';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { AnimatePresence, motion } from 'framer-motion';
 import { LogOut, User, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-const SideBarLayout = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+const SideBarLayout = ({
+    isOpen,
+    onClose,
+    user,
+    isLoggedIn
+}: {
+    isOpen: boolean;
+    onClose: () => void,
+    user: IUser | null,
+    isLoggedIn: boolean
+}) => {
     const dispatch = useDispatch();
     const router = useRouter();
     const pathname = usePathname();
     const [hasMounted, setHasMounted] = React.useState(false);
 
-
     useEffect(() => {
         setHasMounted(true);
     }, []);
 
-
-    const user = {
-        first_name: 'John',
-        last_name: 'Doe',
-        email: 'john@example.com',
-        phone: '+911234567890',
-        isAdmin: true,
-    }
-    const isLoggedIn = true
     const sidebarRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -47,6 +49,9 @@ const SideBarLayout = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
         onClose();
     };
 
+
+    const isActive = (path: string) => pathname === path;
+
     const navItems = [
         { href: "/dashboard", label: "Dashboard", icon: "mdi:view-dashboard" },
         { href: "/wallets", label: "Wallets", icon: "mdi:wallet" },
@@ -55,14 +60,12 @@ const SideBarLayout = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
         { href: "/services", label: "Pay Services", icon: "grommet-icons:services" },
         { href: "/analytics", label: "Analytics", icon: "mdi:analytics" },
     ];
-
     const adminItems = [
         { href: "/admin/users", label: "Manage Users", icon: "ic:outline-manage-accounts" },
         { href: "/admin/services", label: "Manage Services", icon: "carbon:settings-services" },
         { href: "/admin/logs", label: "System Logs", icon: "tdesign:system-marked-filled" },
     ];
 
-    const isActive = (path: string) => pathname === path;
 
     return (
         <>
@@ -110,7 +113,7 @@ const SideBarLayout = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
                                     </li>
                                 ))}
 
-                                {isLoggedIn && user?.isAdmin && (
+                                {isLoggedIn && user?.role === 'admin' && (
                                     <>
                                         <li className="mt-6 mb-2 px-4 text-xs font-semibold uppercase tracking-wider text-white/50">
                                             Admin

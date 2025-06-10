@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, User, LogOut, ChevronDown, X } from "lucide-react";
+import { Menu, User, LogOut, ChevronDown, X, Settings, CreditCard, HelpCircle } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -11,20 +11,24 @@ import { RootState } from "@/store";
 import { setCredentials } from "@/store/slices/userSlice";
 import { cn } from "@/utils/utils";
 import { Icon } from "@iconify/react";
-import NotificationsBell from "@/components/Baselayout/Layout/NotificationsBell";
+import { Badge } from "@/components/ui/badge";
+import { IUser } from "@/types/user-types";
 
-const Header = ({ onSidebarToggle }: { onSidebarToggle: () => void }) => {
+const Header = ({
+  onSidebarToggle,
+  user,
+  isLoggedIn
+}: {
+  onSidebarToggle: () => void,
+  user: IUser | null,
+  isLoggedIn: boolean
+}) => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isNotificationsBellOpen, setIsNotificationsBellOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(3);
 
   const router = useRouter();
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.auth.user);
-  const isLoggedIn = useSelector((state: RootState) => state.auth.token);
-
-  console.log(isLoggedIn);
-  console.log(user);
-  
 
   const userMenuRef = useRef<HTMLDivElement>(null);
   const notificationsBellRef = useRef<HTMLDivElement>(null);
@@ -39,7 +43,7 @@ const Header = ({ onSidebarToggle }: { onSidebarToggle: () => void }) => {
       }
 
       if (notificationsBellRef.current && !notificationsBellRef.current.contains(target)) {
-        setIsOpen(false);
+        setIsNotificationsBellOpen(false);
       }
     };
 
@@ -55,38 +59,34 @@ const Header = ({ onSidebarToggle }: { onSidebarToggle: () => void }) => {
   };
 
   const menuItems = [
-    { label: "Profile", icon: "mdi:account", path: "/profile" },
-    { label: "Settings", icon: "mdi:cog", path: "/settings" },
-    { label: "Billing", icon: "mdi:credit-card-outline", path: "/billing" },
-    { label: "Help & Support", icon: "mdi:help-circle-outline", path: "/support" },
-    { label: "Logout", icon: "mdi:logout", action: handleLogout }
+    {
+      label: "Profile",
+      icon: <User className="w-4 h-4" />,
+      path: "/profile"
+    },
+    {
+      label: "Settings",
+      icon: <Settings className="w-4 h-4" />,
+      path: "/settings"
+    },
+    {
+      label: "Billing",
+      icon: <CreditCard className="w-4 h-4" />,
+      path: "/billing"
+    },
+    {
+      label: "Help & Support",
+      icon: <HelpCircle className="w-4 h-4" />,
+      path: "/support"
+    },
+    {
+      label: "Logout",
+      icon: <LogOut className="w-4 h-4" />,
+      action: handleLogout,
+      danger: true
+    }
   ];
-  const [isOpen, setIsOpen] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(3);
 
-  const notifications = [
-    {
-      id: 1,
-      title: "Payment Received",
-      message: "You received $250 from John Doe",
-      time: "2 hours ago",
-      read: false
-    },
-    {
-      id: 2,
-      title: "Bill Payment",
-      message: "Your electricity bill was paid successfully",
-      time: "1 day ago",
-      read: false
-    },
-    {
-      id: 3,
-      title: "Wallet Update",
-      message: "New features added to your business wallet",
-      time: "3 days ago",
-      read: true
-    },
-  ];
 
   const markAsRead = (id: number) => {
     // In a real app, this would call an API
@@ -115,7 +115,7 @@ const Header = ({ onSidebarToggle }: { onSidebarToggle: () => void }) => {
           </button>
           <div className="hidden md:flex items-center space-x-3 text-white">
             <div>
-              <p className="font-semibold text-xl">{`Hello, ${user.first_name} 👋🏾`}</p>
+              <p className="font-semibold text-xl">{`Hello, ${user?.first_name} 👋🏾`}</p>
               <p className="text-sm text-white/70">Welcome back!</p>
             </div>
           </div>
@@ -124,7 +124,7 @@ const Header = ({ onSidebarToggle }: { onSidebarToggle: () => void }) => {
           {isLoggedIn && user && (
             <div className="relative">
               <button
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => setIsNotificationsBellOpen(!isNotificationsBellOpen)}
                 className="p-2 rounded-full cursor-pointer bg-slate-300 hover:bg-slate-400 relative"
               >
                 <svg
@@ -141,17 +141,14 @@ const Header = ({ onSidebarToggle }: { onSidebarToggle: () => void }) => {
                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                   />
                 </svg>
-
                 {unreadCount > 0 && (
                   <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
                     {unreadCount}
                   </span>
                 )}
               </button>
-
               <AnimatePresence>
-
-                {isOpen && (
+                {isNotificationsBellOpen && (
                   <motion.div
                     ref={notificationsBellRef}
                     initial={{ opacity: 0, y: -10 }}
@@ -221,37 +218,58 @@ const Header = ({ onSidebarToggle }: { onSidebarToggle: () => void }) => {
               <AnimatePresence>
                 {isUserMenuOpen && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50"
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    className="absolute right-0 mt-2 w-56 origin-top-right rounded-lg bg-white shadow-lg ring-1 ring-black/5 focus:outline-none z-50 overflow-hidden"
                   >
-                    <div className="px-4 py-2 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-800">{user.first_name} {user.last_name}</p>
-                      <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                    <div className="p-4 border-b border-slate-400">
+                      <div className="flex items-center gap-3">
+                        <div>
+                          <p className="text-sm font-medium line-clamp-1 text-gray-900">
+                            {user.first_name} {user.last_name}
+                          </p>
+                          <p className="text-xs line-clamp-1 text-gray-500 truncate">
+                            {user.email}
+                          </p>
+                          {user?.role === 'admin' && (
+                            <Badge variant="secondary" className="mt-1 text-xs">
+                              Admin
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                    <div className="py-1">
+                    <div className="p-1">
                       {menuItems.map((item, index) => (
                         <React.Fragment key={index}>
                           {item.path ? (
                             <Link
                               href={item.path}
-                              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              className={cn(
+                                "flex w-full items-center gap-2 rounded px-3 py-2 text-sm",
+                                "text-gray-700 hover:bg-gray-100",
+                                item.danger && "hover:bg-red-50 text-red-600"
+                              )}
                               onClick={() => setIsUserMenuOpen(false)}
                             >
-                              <Icon icon={item.icon} className="mr-2" />
+                              {item.icon}
                               {item.label}
                             </Link>
                           ) : (
                             <button
                               onClick={() => {
                                 item.action?.();
-                                setIsUserMenuOpen(false)
+                                setIsUserMenuOpen(false);
                               }}
-                              className="w-full cursor-pointer bg-red-500 text-white text-left flex items-center px-4 py-2 text-sm hover:bg-red-600"
+                              className={cn(
+                                "flex w-full items-center gap-2 rounded px-3 py-2 text-sm",
+                                "text-gray-700 hover:bg-gray-100",
+                                item.danger && "hover:bg-red-50 text-red-600"
+                              )}
                             >
-                              <Icon icon={item.icon} className="mr-2" />
+                              {item.icon}
                               {item.label}
                             </button>
                           )}
@@ -287,3 +305,27 @@ const Header = ({ onSidebarToggle }: { onSidebarToggle: () => void }) => {
 }
 
 export default Header;
+
+
+const notifications = [
+    {
+        id: 1,
+        title: "Payment Received",
+        message: "You received $250 from John Doe",
+        time: "2 hours ago",
+        read: false
+    }, {
+        id: 2,
+        title: "Bill Payment",
+        message: "Your electricity bill was paid successfully",
+        time: "1 day ago",
+        read: false
+    }, {
+        id: 3,
+        title: "Wallet Update",
+        message: "New features added to your business wallet",
+        time: "3 days ago",
+        read: true
+    },
+];
+
