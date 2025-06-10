@@ -6,15 +6,15 @@ import {
     LoginFormPayload,
     RegisterFormPayload,
     ResetPasswordFormPayload,
-} from '@/types/auth-types';
+} from '@/types/auth-types'; 
 
 export const loginApi = async (payload: LoginFormPayload) => {    
-    const  data  = await axios.post(`${baseURL}/auth/login`, payload);
+    const  data  = await axios.post(`${baseURL}/login`, payload);
     return data;
 };
 
 export const registerApi = async (payload: RegisterFormPayload) => {
-    const { data } = await axios.post(`${baseURL}/auth/register`, payload);
+    const { data } = await axios.post(`${baseURL}/register`, payload);
     return data;
 };
 

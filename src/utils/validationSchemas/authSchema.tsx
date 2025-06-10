@@ -7,7 +7,7 @@ import {
 } from '.';
 
 export const loginFormValidationSchema = object().shape({
-  emailOrPhone: emailValidation(),
+  email: emailValidation(),
   password: string().required('Password is required'),
 });
 

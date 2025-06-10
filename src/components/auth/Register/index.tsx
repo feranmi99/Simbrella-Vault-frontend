@@ -52,12 +52,9 @@ const Register = () => {
       return registerApi(payload);
     },
     onSuccess: (_, { email }) => {
-      console.log(_);
-      
-      const userEmail = email || getValues()?.email;
-      localStorage.setItem('nairazo_v_email', userEmail);
+      // console.log(_);
       setTimeout(() => {
-        router.push('/verify-email');
+        router.push('/login');
       }, 1000);
     },
     onError: (error) => {
