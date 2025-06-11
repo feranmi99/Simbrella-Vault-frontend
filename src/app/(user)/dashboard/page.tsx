@@ -6,6 +6,14 @@ import BalanceTrendChart from '@/components/dashboard/BalanceTrendChart';
 import QuickActions from '@/components/dashboard/QuickActions';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { ArrowDownCircle } from 'lucide-react';
+import CreateWalletModal from '@/components/dashboard/CreateWalletModal';
+import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { createWalletApi } from '@/service/api/walletApi';
+import { toast } from 'react-toastify';
+import { ErrorHandler } from '@/service/axios/errorHandler';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 
 const wallets = [
     {
@@ -51,7 +59,37 @@ const getTotalBalance = (wallets: any[]) =>
     wallets.reduce((acc, wallet) => acc + wallet.balance, 0);
 
 const Page = () => {
-    const totalBalance = getTotalBalance(wallets);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [allWallets, setAllWallets] = useState(wallets);
+    const totalBalance = getTotalBalance(allWallets);
+    const { user, token: isLoggedIn } = useSelector((state: RootState) => state.auth);
+
+    const { mutate: handlelCreateWallet, isPending } = useMutation({
+        mutationFn: createWalletApi,
+        onSuccess: ({ data }) => {
+            console.log(data);
+            toast.success(data?.message || 'Wallet created successfully!');
+        },
+        onError: (error: any) => {
+            const err = ErrorHandler(error);
+            toast.error(err);
+        },
+    });
+
+
+    const handleCreateWallet = (wallet: { name: string; type: string }) => {
+        if (isLoggedIn) {
+            const newWallet = {
+                name: wallet.name,
+                type: wallet.type,
+                currency: 'NGN',
+            };
+            handlelCreateWallet(newWallet);
+        } else {
+            toast.error("You need to be logged in to create a wallet.");
+        }
+    };
+
     return (
         <>
             <div className="md:p-5 p-3 mx-auto space-y-8">
@@ -72,14 +110,13 @@ const Page = () => {
                             </p>
                         </div>
                         <button
-                            className="mt-4 md:mt-0 bg-white/90 text-blue-700 h-fit font-semibold py-3 px-6 rounded-lg w-fit hover:bg-white transition transform hover:scale-105 shadow-md flex items-center gap-2"
+                            onClick={() => setIsModalOpen(true)}
+                            className="mt-4 md:mt-0 bg-white/90 text-blue-700 h-fit font-semibold py-3 px-6 rounded-lg w-fit hover:bg-white transition cursor-pointer transform hover:scale-105 shadow-md flex items-center gap-2"
                             aria-label="Top up wallet"
                         >
                             <Icon icon="lucide:wallet" className="h-5 w-5" />
                             Create Wallet
                         </button>
-
-
                     </div>
                     <BalanceTrendChart />
                 </section>
@@ -109,6 +146,11 @@ const Page = () => {
                 </section>
             </div>
 
+            <CreateWalletModal
+                open={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onCreate={handleCreateWallet}
+            />
         </>
     )
 }
