@@ -8,8 +8,8 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import { ArrowDownCircle } from 'lucide-react';
 import CreateWalletModal from '@/components/dashboard/CreateWalletModal';
 import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { createWalletApi } from '@/service/api/walletApi';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { createWalletApi, getAllWalletsApi } from '@/service/api/walletApi';
 import { toast } from 'react-toastify';
 import { ErrorHandler } from '@/service/axios/errorHandler';
 import { useSelector } from 'react-redux';
@@ -64,6 +64,15 @@ const Page = () => {
     const totalBalance = getTotalBalance(allWallets);
     const { user, token: isLoggedIn } = useSelector((state: RootState) => state.auth);
 
+    const { data: wallet, isLoading: isLoadingWallet } = useQuery({
+        queryKey: ['getWallets'],
+        queryFn: getAllWalletsApi,
+    });
+
+    console.log(wallet);
+    
+
+
     const { mutate: handlelCreateWallet, isPending } = useMutation({
         mutationFn: createWalletApi,
         onSuccess: ({ data }) => {
@@ -93,7 +102,7 @@ const Page = () => {
     return (
         <>
             <div className="md:p-5 p-3 mx-auto space-y-8">
-                <section className="relative bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl shadow-xl p-6 overflow-hidden">
+                <section className="relative  bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl shadow-xl p-6 overflow-hidden">
                     <div className="absolute inset-0 opacity-10">
                         <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full filter blur-3xl opacity-20"></div>
                         <div className="absolute bottom-0 right-0 w-64 h-64 bg-indigo-300 rounded-full filter blur-3xl opacity-20"></div>
@@ -123,9 +132,13 @@ const Page = () => {
                 <section>
                     <h3 className="text-xl font-semibold mb-4">Your Wallets</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {wallets.map((wallet) => (
+                        {wallet && wallet.length > 0 &&
+                         wallet.map((wallet) => (
                             <BalanceCard key={wallet.id} wallet={wallet} />
                         ))}
+                        {/* {wallets.map((wallet) => (
+                            <BalanceCard key={wallet.id} wallet={wallet} />
+                        ))} */}
                     </div>
                 </section>
                 <section>

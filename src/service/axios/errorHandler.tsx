@@ -16,7 +16,7 @@ export const ErrorHandler = (error: any) => {
 
     if (status >= 500 && status < 600) {
       message = error.response.data.message || defaultMessage;
-      // toast.error(message);
+      toast.error(message);
       return { message, status };
     }
 

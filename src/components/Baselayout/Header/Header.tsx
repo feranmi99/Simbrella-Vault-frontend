@@ -103,7 +103,7 @@ const Header = ({
   };
 
   return (
-    <div className="fixed md:w-[calc(100%-18rem)] md:ms-72 top-0 z-50 bg-gradient-to-br from-blue-600 to-indigo-800 shadow-md w-full flex items-center justify-between md:px-4 px-2 md:py-3 py-2 border-b border-green-500/20 bg-[#00b53f]">
+    <div className="fixed md:w-[calc(100%-18rem)] md:ms-72 top-0 z-50  bg-gradient-to-br from-slate-900 to-slate-800 shadow-md w-full flex items-center justify-between md:px-4 px-2 md:py-3 py-2 border-b border-green-500/20 bg-[#00b53f]">
       <div className="px-4 py-4 flex items-center w-full justify-between">
         <div className="flex items-center">
           <button

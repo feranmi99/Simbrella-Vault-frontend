@@ -11,8 +11,11 @@ import {
 import { Icon } from '@iconify/react/dist/iconify.js';
 
 export default function BalanceCard({ wallet }: { wallet: Wallet }) {
-    const progress = (wallet.balance / wallet.goalAmount) * 100;
-    const isGoalReached = wallet.balance >= wallet.goalAmount;
+
+    console.log(wallet);
+    
+    // const progress = (wallet.balance / wallet.goalAmount) * 100;
+    // const isGoalReached = wallet.balance >= wallet.goalAmount;
     const lastTransaction = wallet.transactions[wallet.transactions.length - 1];
 
     return (
@@ -42,7 +45,7 @@ export default function BalanceCard({ wallet }: { wallet: Wallet }) {
 
             <div className="mb-6">
                 <span className="text-3xl font-bold text-gray-900">
-                    ${wallet.balance.toLocaleString()}
+                    ${wallet.balance}
                 </span>
                 {lastTransaction && (
                     <div className="flex items-center mt-1">
