@@ -72,8 +72,8 @@ const SideBarLayout = ({
             title: "Payment Services",
             items: [
                 { href: "/send-money", label: "Money Transfer", icon: "mdi:send" },
-                { href: "/services", label: "Bill Payments", icon: "grommet-icons:services" },
-                { href: "/exchange", label: "Currency Exchange", icon: "fa6-solid:money-bill-transfer" },
+                // { href: "/services", label: "Bill Payments", icon: "grommet-icons:services" },
+                // { href: "/exchange", label: "Currency Exchange", icon: "fa6-solid:money-bill-transfer" },
             ]
         },
         {

@@ -33,7 +33,7 @@ export const formatMoneyToNumber = (val: string | number) => {
 export const formatNumberToMoney = (val: number | string) => {
   const formattedValue = Number(val).toLocaleString('en-US', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'NGN',
     minimumFractionDigits: 0,
   });
 

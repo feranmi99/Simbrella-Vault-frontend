@@ -1,28 +1,56 @@
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
-import { ArrowUp, ArrowDown, TrendingUp, DollarSign } from 'lucide-react';
+'use client';
+
+import {
+    AreaChart,
+    Area,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+    ReferenceLine,
+} from 'recharts';
+import { ArrowUp, ArrowDown, TrendingUp } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Icon } from '@iconify/react/dist/iconify.js';
+import { Icon } from '@iconify/react';
+import { formatAmount } from './BalanceCard';
 
-const balanceHistory = [
-    { date: 'Jun 1', balance: 4200, transactions: 12 },
-    { date: 'Jun 2', balance: 3800, transactions: 8 },
-    { date: 'Jun 3', balance: 4100, transactions: 15 },
-    { date: 'Jun 4', balance: 3950, transactions: 10 },
-    { date: 'Jun 5', balance: 4750, transactions: 18 },
-    { date: 'Jun 6', balance: 4300, transactions: 14 },
-    { date: 'Jun 7', balance: 4600, transactions: 16 },
-    { date: 'Jun 8', balance: 4850, transactions: 20 },
-];
+type Wallet = {
+    id: number;
+    name: string;
+    balance: number;
+    createdAt: string;
+};
 
-const BalanceTrendChart = () => {
-    const currentBalance = balanceHistory[balanceHistory.length - 1].balance;
-    const previousBalance = balanceHistory[0].balance;
-    const balanceChange = currentBalance - previousBalance;
-    const percentageChange = ((balanceChange / previousBalance) * 100).toFixed(1);
-    const isPositive = balanceChange >= 0;
-    const averageDailyTransactions = Math.round(
-        balanceHistory.reduce((sum, day) => sum + day.transactions, 0) / balanceHistory.length
+type Props = {
+    data: Wallet[];
+};
+
+const BalanceTrendChart = ({ data }: Props) => {
+    // Sort wallets by date
+    const sortedData = [...data].sort(
+        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     );
+
+    // Format balance history for the chart
+    const balanceHistory = sortedData.map((wallet) => ({
+        date: new Date(wallet.createdAt).toLocaleDateString(),
+        balance: Number(wallet.balance),
+        transactions: Math.floor(Math.random() * 10 + 1), // Replace with real transactions if available
+    }));
+
+    const currentBalance = sortedData[sortedData.length - 1]?.balance || 0;
+    const previousBalance = sortedData[0]?.balance || 0;
+    const balanceChange = currentBalance - previousBalance;
+    const isPositive = balanceChange >= 0;
+    const percentageChange = previousBalance
+        ? ((balanceChange / previousBalance) * 100).toFixed(2)
+        : '0.00';
+
+    const totalTransactions = balanceHistory.reduce((sum, item) => sum + item.transactions, 0);
+    const averageDailyTransactions = balanceHistory.length
+        ? Math.round(totalTransactions / balanceHistory.length)
+        : 0;
 
     return (
         <Card className="shadow-sm">
@@ -35,12 +63,14 @@ const BalanceTrendChart = () => {
                     </div>
                 </div>
             </CardHeader>
+
             <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div className="bg-gray-50 p-4 rounded-lg">
                         <p className="text-sm font-medium text-gray-500">Current Balance</p>
-                        <p className="text-2xl font-bold text-gray-700">₦{currentBalance.toLocaleString()}</p>
+                        <p className="text-2xl font-bold text-gray-700">{formatAmount(currentBalance)}</p>
                     </div>
+
                     <div className="bg-gray-50 p-4 rounded-lg">
                         <p className="text-sm font-medium text-gray-500">Balance Change</p>
                         <div className="flex items-center">
@@ -54,6 +84,7 @@ const BalanceTrendChart = () => {
                             </span>
                         </div>
                     </div>
+
                     <div className="bg-gray-50 p-4 rounded-lg">
                         <p className="text-sm font-medium text-gray-500">Avg. Daily Transactions</p>
                         <div className="flex items-center">
@@ -75,27 +106,28 @@ const BalanceTrendChart = () => {
                                     <stop offset="95%" stopColor="#16a34a" stopOpacity={0.1} />
                                 </linearGradient>
                             </defs>
-                            <XAxis 
-                                dataKey="date" 
+
+                            <XAxis
+                                dataKey="date"
                                 tick={{ fill: '#fff' }}
                                 axisLine={false}
                                 tickLine={false}
                             />
-                            <YAxis 
+                            <YAxis
                                 tick={{ fill: '#fff' }}
                                 axisLine={false}
                                 tickLine={false}
                                 tickFormatter={(value) => `₦${value / 1000}k`}
                             />
-                            <CartesianGrid 
-                                strokeDasharray="3 3" 
-                                vertical={false} 
-                                stroke="#e5e7eb" 
+                            <CartesianGrid
+                                strokeDasharray="3 3"
+                                vertical={false}
+                                stroke="#e5e7eb"
                             />
-                            <ReferenceLine 
-                                y={previousBalance} 
-                                stroke="#9ca3af" 
-                                strokeDasharray="3 3" 
+                            <ReferenceLine
+                                y={previousBalance}
+                                stroke="#9ca3af"
+                                strokeDasharray="3 3"
                                 label="Start"
                             />
                             <Tooltip
@@ -130,6 +162,6 @@ const BalanceTrendChart = () => {
             </CardContent>
         </Card>
     );
-}
+};
 
 export default BalanceTrendChart;
