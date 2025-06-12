@@ -7,13 +7,14 @@ import QuickActions from '@/components/dashboard/QuickActions';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { ArrowDownCircle } from 'lucide-react';
 import CreateWalletModal from '@/components/dashboard/CreateWalletModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { createWalletApi, getAllWalletsApi } from '@/service/api/walletApi';
 import { toast } from 'react-toastify';
 import { ErrorHandler } from '@/service/axios/errorHandler';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
+import { Wallet } from '@/types';
 
 const wallets = [
     {
@@ -56,11 +57,11 @@ const wallets = [
 ];
 
 const getTotalBalance = (wallets: any[]) =>
-    wallets.reduce((acc, wallet) => acc + wallet.balance, 0);
+  wallets.reduce((acc, wallet) => acc + Number(wallet.balance), 0);
 
 const Page = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [allWallets, setAllWallets] = useState(wallets);
+    const [allWallets, setAllWallets] = useState<any[]>([]);
     const totalBalance = getTotalBalance(allWallets);
     const { user, token: isLoggedIn } = useSelector((state: RootState) => state.auth);
 
@@ -69,9 +70,11 @@ const Page = () => {
         queryFn: getAllWalletsApi,
     });
 
-    console.log(wallet);
-    
-
+    useEffect(() => {
+        if (wallet) {
+            setAllWallets(wallet);
+        }
+    }, [wallet])
 
     const { mutate: handlelCreateWallet, isPending } = useMutation({
         mutationFn: createWalletApi,
@@ -84,7 +87,6 @@ const Page = () => {
             toast.error(err);
         },
     });
-
 
     const handleCreateWallet = (wallet: { name: string; type: string }) => {
         if (isLoggedIn) {
@@ -132,13 +134,30 @@ const Page = () => {
                 <section>
                     <h3 className="text-xl font-semibold mb-4">Your Wallets</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {wallet && wallet.length > 0 &&
+                        {/* {wallet && wallet.length > 0 &&
                          wallet.map((wallet) => (
                             <BalanceCard key={wallet.id} wallet={wallet} />
-                        ))}
+                        ))} */}
                         {/* {wallets.map((wallet) => (
                             <BalanceCard key={wallet.id} wallet={wallet} />
                         ))} */}
+                        {allWallets.map((wallet) => {
+                            const mergedTransactions = [
+                                ...(wallet.sentTransactions || []),
+                                ...(wallet.receivedTransactions || []),
+                            ];                            
+
+                            const sortedTransactions = mergedTransactions.sort(
+                                (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+                            );
+
+                            return (
+                                <BalanceCard
+                                    key={wallet.id}
+                                    wallet={{ ...wallet, transactions: sortedTransactions }}
+                                />
+                            );
+                        })}
                     </div>
                 </section>
                 <section>

@@ -6,6 +6,6 @@ export const createWalletApi = async (data: any) => {
 };
 
 export const getAllWalletsApi = async () => {
-    const { data } = await Axios.get(`/wallets`);
+    const { data } = await Axios.get(`/users/wallets`);
     return data;
 };

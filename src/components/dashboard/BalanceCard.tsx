@@ -1,5 +1,5 @@
 import { Wallet } from '@/types';
-import { Send,  MoreVertical, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { Send, MoreVertical, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,14 +10,15 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Icon } from '@iconify/react/dist/iconify.js';
 
-export default function BalanceCard({ wallet }: { wallet: Wallet }) {
+export default function BalanceCard({ wallet }: { wallet: any }) {
+
+
+    // const lastTransaction = wallet.transactions[wallet.transactions.length - 1];
+    const lastTransaction = wallet.transactions?.[wallet.transactions.length - 1];
+
 
     console.log(wallet);
-    
-    // const progress = (wallet.balance / wallet.goalAmount) * 100;
-    // const isGoalReached = wallet.balance >= wallet.goalAmount;
-    const lastTransaction = wallet.transactions[wallet.transactions.length - 1];
-
+    console.log(lastTransaction);
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all duration-200 group">
             <div className="flex justify-between items-start mb-4">
@@ -28,7 +29,7 @@ export default function BalanceCard({ wallet }: { wallet: Wallet }) {
                     </div>
                     <p className="text-sm text-gray-500 capitalize">{wallet.type} Wallet</p>
                 </div>
-                
+
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -49,19 +50,20 @@ export default function BalanceCard({ wallet }: { wallet: Wallet }) {
                 </span>
                 {lastTransaction && (
                     <div className="flex items-center mt-1">
-                        {lastTransaction.type === 'deposit' ? (
+                        {lastTransaction.type === 'credit' ? (
                             <ArrowDownLeft className="h-4 w-4 text-green-500 mr-1" />
                         ) : (
                             <ArrowUpRight className="h-4 w-4 text-red-500 mr-1" />
                         )}
-                        <span className={`text-sm ${lastTransaction.type === 'deposit' ? 'text-green-600' : 'text-red-600'}`}>
-                            ${lastTransaction.amount} {lastTransaction.type === 'deposit' ? 'received' : 'sent'}
+                        <span className={`text-sm ${lastTransaction.type === 'credit' ? 'text-green-600' : 'text-red-600'}`}>
+                            ${lastTransaction.amount} {lastTransaction.type === 'credit' ? 'received' : 'sent'}
                         </span>
                         <span className="text-xs text-gray-400 ml-2">
                             {new Date(lastTransaction.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                         </span>
                     </div>
                 )}
+
             </div>
             <div className="flex space-x-3">
                 <Button className="flex-1 bg-gradient-to-br from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-sm">
