@@ -10,15 +10,15 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Icon } from '@iconify/react/dist/iconify.js';
 
+
+export const formatAmount = (amount: number) =>
+    new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(amount);
+
 export default function BalanceCard({ wallet }: { wallet: any }) {
+    const lastRelevantTransaction = [...(wallet.sentTransactions || []), ...(wallet.receivedTransactions || [])]
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
 
 
-    // const lastTransaction = wallet.transactions[wallet.transactions.length - 1];
-    const lastTransaction = wallet.transactions?.[wallet.transactions.length - 1];
-
-
-    console.log(wallet);
-    console.log(lastTransaction);
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all duration-200 group">
             <div className="flex justify-between items-start mb-4">
@@ -46,20 +46,20 @@ export default function BalanceCard({ wallet }: { wallet: any }) {
 
             <div className="mb-6">
                 <span className="text-3xl font-bold text-gray-900">
-                    ${wallet.balance}
+                    {formatAmount(wallet.balance)}
                 </span>
-                {lastTransaction && (
+                {lastRelevantTransaction && (
                     <div className="flex items-center mt-1">
-                        {lastTransaction.type === 'credit' ? (
+                        {lastRelevantTransaction.type === 'credit' ? (
                             <ArrowDownLeft className="h-4 w-4 text-green-500 mr-1" />
                         ) : (
                             <ArrowUpRight className="h-4 w-4 text-red-500 mr-1" />
                         )}
-                        <span className={`text-sm ${lastTransaction.type === 'credit' ? 'text-green-600' : 'text-red-600'}`}>
-                            ${lastTransaction.amount} {lastTransaction.type === 'credit' ? 'received' : 'sent'}
+                        <span className={`text-sm ${lastRelevantTransaction.type === 'credit' ? 'text-green-600' : 'text-red-600'}`}>
+                            {formatAmount(lastRelevantTransaction.amount)} {lastRelevantTransaction.type === 'credit' ? 'received' : 'sent'}
                         </span>
                         <span className="text-xs text-gray-400 ml-2">
-                            {new Date(lastTransaction.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                            {new Date(lastRelevantTransaction.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                         </span>
                     </div>
                 )}

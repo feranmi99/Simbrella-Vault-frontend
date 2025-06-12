@@ -57,7 +57,7 @@ const wallets = [
 ];
 
 const getTotalBalance = (wallets: any[]) =>
-  wallets.reduce((acc, wallet) => acc + Number(wallet.balance), 0);
+    wallets.reduce((acc, wallet) => acc + Number(wallet.balance), 0);
 
 const Page = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -129,18 +129,46 @@ const Page = () => {
                             Create Wallet
                         </button>
                     </div>
-                    <BalanceTrendChart />
+                    <BalanceTrendChart data={allWallets} />
                 </section>
                 <section>
                     <h3 className="text-xl font-semibold mb-4">Your Wallets</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {/* {wallet && wallet.length > 0 &&
-                         wallet.map((wallet) => (
-                            <BalanceCard key={wallet.id} wallet={wallet} />
-                        ))} */}
-                        {/* {wallets.map((wallet) => (
-                            <BalanceCard key={wallet.id} wallet={wallet} />
-                        ))} */}
+                    {allWallets.length === 0 ? (
+                        <div className="w-full border border-dashed border-gray-400 rounded-xl p-6 flex flex-col items-center justify-center text-center space-y-4 bg-white shadow-sm">
+                            <Icon icon="lucide:wallet" className="text-gray-400 w-12 h-12" />
+                            <p className="text-gray-600 text-lg font-medium">
+                                You don't have any wallets yet.
+                            </p>
+                            <button
+                                onClick={() => setIsModalOpen(true)}
+                                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition"
+                            >
+                                Create Wallet
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {allWallets.map((wallet) => {
+                                const mergedTransactions = [
+                                    ...(wallet.sentTransactions || []),
+                                    ...(wallet.receivedTransactions || []),
+                                ];
+
+                                const sortedTransactions = mergedTransactions.sort(
+                                    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+                                );
+
+                                return (
+                                    <BalanceCard
+                                        key={wallet.id}
+                                        wallet={{ ...wallet, transactions: sortedTransactions }}
+                                    />
+                                );
+                            })}
+                        </div>
+                    )}
+
+                    {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {allWallets.map((wallet) => {
                             const mergedTransactions = [
                                 ...(wallet.sentTransactions || []),
@@ -158,7 +186,7 @@ const Page = () => {
                                 />
                             );
                         })}
-                    </div>
+                    </div> */}
                 </section>
                 <section>
                     <h3 className="text-xl font-semibold mb-4">Quick Actions</h3>
